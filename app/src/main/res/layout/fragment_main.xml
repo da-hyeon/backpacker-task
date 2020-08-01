@@ -38,7 +38,8 @@
                 android:scrollbars="none"
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_weather_info" />
+                tools:listitem="@layout/item_weather_info"
+                tools:visibility="visible"/>
         </LinearLayout>
 
 
