@@ -1,6 +1,8 @@
 package com.hdh.backpacker_task.ui.main.fragment
 
+import com.hdh.backpacker_task.data.model.data.Location
 import com.hdh.backpacker_task.ui.base.BasePresenter
+import com.hdh.backpacker_task.utils.ApiCallback
 import com.hdh.backpacker_task.utils.ApiClient
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,11 +36,16 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
                     }
                 ).toList()
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { mView.mActivity.loadingState.onNext(false) }
-            .subscribe {
-                it.sort()
-                mView.setRecyclerView(it)
+            , object : ApiCallback<List<Location>>(mView.mActivity.loadingState){
+                override fun onSuccess(model: List<Location>) {
+                    model.toTypedArray().sort()
+                    mView.setRecyclerView(model)
+                }
+
+                override fun onFailure(msg: String?) {
+                    mView.showToast(msg)
+                    mView.onError()
+                }
             })
     }
 }

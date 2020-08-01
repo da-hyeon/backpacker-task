@@ -6,4 +6,5 @@ import com.hdh.backpacker_task.ui.base.BaseView
 
 interface MainFragmentView : BaseView {
     fun setRecyclerView(list : List<Location>)
+    fun onError()
 }

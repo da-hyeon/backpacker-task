@@ -1,5 +1,7 @@
 package com.hdh.backpacker_task.utils
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
@@ -11,6 +13,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.target.ViewTarget
+import com.bumptech.glide.signature.ObjectKey
 
 object ImageUtil {
     fun getImage(
@@ -28,6 +31,8 @@ object ImageUtil {
                     return false
                 }
             })
+            .placeholder(ColorDrawable(Color.WHITE))
+            .signature(ObjectKey(imageUrl))
             .into(imageView)
     }
 }

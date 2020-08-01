@@ -10,7 +10,8 @@ import com.hdh.backpacker_task.data.model.data.Location
 import com.hdh.backpacker_task.ui.base.mvp.MvpFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView , SwipeRefreshLayout.OnRefreshListener{
+class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private val mLocalWeatherListAdapter by lazy {
         LocalWeatherListAdapter()
@@ -25,6 +26,7 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView , Sw
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         refresh_swipe.setOnRefreshListener(this)
+        refresh_swipe.isEnabled = false
         recycler_local_weather.adapter = mLocalWeatherListAdapter
     }
 
@@ -36,7 +38,12 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView , Sw
         refresh_swipe.isEnabled = true
     }
 
+    override fun onError() {
+        refresh_swipe.isEnabled = true
+    }
+
     override fun onRefresh() {
+        recycler_local_weather.visibility = View.GONE
         refresh_swipe.isRefreshing = false
         refresh_swipe.isEnabled = false
         mPresenter.sendRequest()
