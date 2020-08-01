@@ -16,7 +16,6 @@ import io.reactivex.schedulers.Schedulers
 open class BasePresenter<V : BaseView> {
 
     protected lateinit var mView: V
-    protected lateinit var apiStores: ApiStores
 
     val compositeDisposable: CompositeDisposable by lazy {
         CompositeDisposable()
@@ -24,7 +23,6 @@ open class BasePresenter<V : BaseView> {
 
     open fun onAttach(view: V) {
         mView = view
-        apiStores = ApiClient().retrofit().create(ApiStores::class.java)
     }
 
     open fun onDetach() {
@@ -47,15 +45,5 @@ open class BasePresenter<V : BaseView> {
 
     open fun addSubscription(observer: Disposable) {
         compositeDisposable.add(observer)
-    }
-
-    open fun View.addRipple() = with(TypedValue()) {
-        context.theme.resolveAttribute(R.attr.selectableItemBackground, this, true)
-        setBackgroundResource(resourceId)
-    }
-
-    open fun View.addCircleRipple() = with(TypedValue()) {
-        context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, this, true)
-        setBackgroundResource(resourceId)
     }
 }

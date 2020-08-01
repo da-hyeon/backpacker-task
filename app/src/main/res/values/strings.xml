@@ -2,4 +2,6 @@
     <string name="app_name">BACKPACKER TASK</string>
 
     <string name="double_back_to_exit_pressed_once_text">뒤로가기를 한번 더 누르면 앱이 종료됩니다.</string>
+    <string name="the_temp">%d°C</string>
+    <string name="humidity">%d%%</string>
 </resources>

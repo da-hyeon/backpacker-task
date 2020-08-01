@@ -1,21 +1,22 @@
 package com.hdh.backpacker_task.data
 
+import com.hdh.backpacker_task.data.model.data.Location
+import com.hdh.backpacker_task.data.model.data.LocationSearch
 import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiStores {
-
-    //https://www.metaweather.com/static/img/weather/png/64/sn.png
-
     @GET("location/search/")
     fun searchLocation(
         @Query("query") searchKeyWord : String
-    ): Observable<Void>
+    ): Single<ArrayList<LocationSearch>>
 
-    @GET("location/search/")
+
+    @GET("location/{woeid}/")
     fun searchWeather(
-        @Query("query") searchKeyWord : String
-    ): Observable<Void>
+        @Path("woeid") woeid : String
+    ): Observable<Location>
 }

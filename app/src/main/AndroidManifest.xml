@@ -12,12 +12,12 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:screenOrientation="portrait"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Transparent">
-        <activity android:name=".ui.main.activity.MainActivity"
-            android:theme="@style/StartTheme"
+        <activity
+            android:name=".ui.main.activity.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/StartTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -7,8 +7,6 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.hdh.backpacker_task.data.ApiStores
-import com.hdh.backpacker_task.ui.base.BaseActivity
-import com.hdh.kakao_pay_task.utils.ClickUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -20,10 +18,6 @@ open class BaseFragment : Fragment(), BaseView {
     private lateinit var mView: View
     private val compositeDisposable = CompositeDisposable()
     private var statusBarHexColor = 0
-    private var statusBarResID = 0
-    private var isCloseType: Boolean = false
-
-    protected lateinit var click: ClickUtil
 
     fun getBaseActivity(): BaseActivity {
         return activity as BaseActivity
@@ -38,8 +32,6 @@ open class BaseFragment : Fragment(), BaseView {
         mActivity = getBaseActivity()
 
         getBaseActivity().fragmentList.add(this)
-
-        click = getBaseActivity().click
     }
 
     fun setContentView(inflater: LayoutInflater, resId: Int): View {
@@ -49,17 +41,11 @@ open class BaseFragment : Fragment(), BaseView {
         mView.setOnClickListener { }
 
         decor?.systemUiVisibility = 0
-        hideKeyboard()
-
         return mView
     }
 
     override fun pushFragment(fragment: BaseFragment) {
         getBaseActivity().pushFragment(fragment)
-    }
-
-    override fun pushUpFragment(fragment: BaseFragment) {
-        getBaseActivity().pushUpFragment(fragment)
     }
 
     override fun pushMainFragment(fragment: BaseFragment) {
@@ -70,39 +56,11 @@ open class BaseFragment : Fragment(), BaseView {
         getBaseActivity().popBackStack(this, true)
     }
 
-    override fun popFragment(fragment: BaseFragment) {
-        // no animation
-        if (isCloseType) {
-            getBaseActivity().popBackStackClose(this, false)
-            return
-        }
-        getBaseActivity().popBackStack(fragment, false)
-    }
-
-    open fun apiStores(): ApiStores? {
-        return getBaseActivity().apiStores
-    }
-
     /**
      * 상위 프레그먼트에서 돠돌아왔을때 호출
      */
     override fun onReturn() {
-        if (statusBarHexColor != 0) {
-            setStatusBarNoAnimation(statusBarHexColor)
-            return
-        }
-        setStatusBarResID(statusBarResID)
-    }
 
-    override fun setStatusBarNoAnimation(hex: Int) {
-        statusBarHexColor = hex
-
-        getBaseActivity().window?.statusBarColor = statusBarHexColor
-    }
-
-    override fun setStatusBarResID(id: Int) {
-        statusBarResID = id
-        getBaseActivity().setFragmentStatusBarColor(id)
     }
 
     open fun getMotherView(): View? {
@@ -122,10 +80,6 @@ open class BaseFragment : Fragment(), BaseView {
 
     override fun hideLoading() {
         getBaseActivity().loadingState.onNext(false)
-    }
-
-    override fun hideKeyboard() {
-        getBaseActivity().hideKeyboard()
     }
 
     override fun onDestroy() {

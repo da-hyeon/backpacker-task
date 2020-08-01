@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hdh.backpacker_task.R
 import com.hdh.backpacker_task.data.model.data.Location
 import com.hdh.backpacker_task.ui.base.mvp.MvpFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
+class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView , SwipeRefreshLayout.OnRefreshListener{
+
+    private val mLocalWeatherListAdapter by lazy {
+        LocalWeatherListAdapter()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,27 +24,21 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setStatusBarResID(R.color.colorStatusBar)
-
-        val list : ArrayList<Location.ConsolidatedWeather> = ArrayList()
-        list.add(Location.ConsolidatedWeather("asdasdasdasdad" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-        list.add(Location.ConsolidatedWeather("asd" , "Asd" , "asd" , "Asd" , "asd"))
-
-        recycler_local_weather.adapter = LocalWeatherListAdapter(list , this)
-        setOnClickListener()
-    }
-
-    private fun setOnClickListener() {
-
+        refresh_swipe.setOnRefreshListener(this)
+        recycler_local_weather.adapter = mLocalWeatherListAdapter
     }
 
     override fun createPresenter(): MainFragmentPresenter = MainFragmentPresenter(this)
+
+    override fun setRecyclerView(list: List<Location>) {
+        recycler_local_weather.visibility = View.VISIBLE
+        mLocalWeatherListAdapter.items = list
+        refresh_swipe.isEnabled = true
+    }
+
+    override fun onRefresh() {
+        refresh_swipe.isRefreshing = false
+        refresh_swipe.isEnabled = false
+        mPresenter.sendRequest()
+    }
 }
