@@ -36,9 +36,9 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
                     }
                 ).toList()
             }
-            , object : ApiCallback<List<Location>>(mView.mActivity.loadingState){
-                override fun onSuccess(model: List<Location>) {
-                    model.toTypedArray().sort()
+            , object : ApiCallback<MutableList<Location>>(mView.mActivity.loadingState){
+                override fun onSuccess(model: MutableList<Location>) {
+                    model.sort()
                     mView.setRecyclerView(model)
                 }
 
