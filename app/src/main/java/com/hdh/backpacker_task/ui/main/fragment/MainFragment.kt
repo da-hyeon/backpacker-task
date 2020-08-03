@@ -46,6 +46,6 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView,
         recycler_local_weather.visibility = View.GONE
         refresh_swipe.isRefreshing = false
         refresh_swipe.isEnabled = false
-        mPresenter.sendRequest()
+        mPresenter.sendReSearch()
     }
 }
