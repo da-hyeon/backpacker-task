@@ -14,18 +14,33 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 open class BaseActivity : AppCompatActivity() {
 
     private val compositeDisposable: CompositeDisposable by lazy { CompositeDisposable() }
     var fragmentList: ArrayList<BaseFragment> = ArrayList()
-    private var doubleBackToExitPressedOnce = false
     val loadingState = PublishSubject.create<Boolean>()
+    private val backButtonSubject = BehaviorSubject.createDefault(0L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+
+        //뒤로가기 로직
+        addSubscription(backButtonSubject.buffer(2, 1)
+            .map { it[1] - it[0] < TimeUnit.MILLISECONDS.toMillis(1500) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it) {
+                    super.onBackPressed()
+                } else {
+                    Toast.makeText(this, getString(R.string.double_back_to_exit_pressed_once_text), Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
 
     override fun onBackPressed() {
@@ -38,15 +53,7 @@ open class BaseActivity : AppCompatActivity() {
             return
         }
 
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed()
-            return
-        }
-
-        this.doubleBackToExitPressedOnce = true
-
-        Toast.makeText(this, getString(R.string.double_back_to_exit_pressed_once_text), Toast.LENGTH_SHORT).show()
-        Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 1500)
+        backButtonSubject.onNext(System.currentTimeMillis())
     }
 
     fun getTopFragment(): BaseFragment? {

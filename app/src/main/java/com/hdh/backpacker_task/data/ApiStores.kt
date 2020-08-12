@@ -12,7 +12,7 @@ interface ApiStores {
     @GET("location/search/")
     fun searchLocation(
         @Query("query") searchKeyWord : String
-    ): Single<ArrayList<LocationSearch>>
+    ): Single<List<LocationSearch>>
 
 
     @GET("location/{woeid}/")

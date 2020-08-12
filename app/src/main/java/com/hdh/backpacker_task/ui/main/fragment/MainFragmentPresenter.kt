@@ -13,7 +13,6 @@ import io.reactivex.subjects.BehaviorSubject
 class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
 
     private val searchSubject = BehaviorSubject.createDefault("se")
-    private var isError : Boolean = false
 
     constructor(view: MainFragmentView) : this() {
         onAttach(view)
@@ -26,10 +25,8 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { mView.mActivity.loadingState.onNext(true) }
             .observeOn(Schedulers.io())
-            .switchMapSingle {
-                ApiClient.mRetrofit.searchLocation(it)
-            }
-            .switchMapSingle {
+            .switchMapSingle { ApiClient.mRetrofit.searchLocation(it) }
+            .concatMapSingle {
                 Observable.concatEager(
                     it.map { locationSearch ->
                         ApiClient.mRetrofit.searchWeather(locationSearch.woeid)
@@ -37,7 +34,7 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
                     }
                 ).toList()
             }
-            , object : ApiCallback<List<Location>>(mView.mActivity.loadingState){
+            , object : ApiCallback<List<Location>>(mView.mActivity.loadingState) {
                 override fun onSuccess(model: List<Location>) {
                     mView.setRecyclerView(model)
                 }
@@ -45,16 +42,15 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
                 override fun onFailure(msg: String?) {
                     mView.showToast(msg)
                     mView.onError()
-                    isError = true
                 }
             })
     }
 
-    fun sendReSearch(){
-        if (isError){
-            sendRequest()
-        } else{
+    fun sendReSearch() {
+        if (searchSubject.hasObservers()){
             searchSubject.onNext("se")
+        } else {
+            sendRequest()
         }
     }
 }

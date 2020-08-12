@@ -1,11 +1,6 @@
 package com.hdh.backpacker_task.ui.base
 
 import android.annotation.SuppressLint
-import android.util.TypedValue
-import android.view.View
-import com.hdh.backpacker_task.R
-import com.hdh.backpacker_task.data.ApiStores
-import com.hdh.backpacker_task.utils.ApiClient
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -17,7 +12,7 @@ open class BasePresenter<V : BaseView> {
 
     protected lateinit var mView: V
 
-    val compositeDisposable: CompositeDisposable by lazy {
+    private val compositeDisposable: CompositeDisposable by lazy {
         CompositeDisposable()
     }
 
@@ -34,13 +29,13 @@ open class BasePresenter<V : BaseView> {
     }
 
     @SuppressLint("CheckResult")
-    open fun addSubscription(observable: Observable<*>?, observer: DisposableObserver<*>) {
+    open fun addSubscription(observable: Observable<*>, observer: DisposableObserver<*>) {
         compositeDisposable.add(observer)
 
         observable
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribeWith(observer as DisposableObserver<Any>)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(observer as DisposableObserver<Any>)
     }
 
     open fun addSubscription(observer: Disposable) {
